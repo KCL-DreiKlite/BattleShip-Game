@@ -1,0 +1,85 @@
+Expect Feature:
+1. Has the same basic rules as like the original battleship game.
+2. Ships introdutions:
+    A. Destroyer
+        Size:   2
+        Max:    2
+
+        Destroyer can only be placed at Field A (see Field Intro.png).
+        If there's any torpedo hit destroyer, then it will sink immediately.
+
+        Destroyer can only fire the flame shell. If enemy ship got hit, then it will start burning until enemy use a round to extinguish it or sink.
+        Also, destroyer can only hit Field A and Field B (see Field Intro.png).
+        Destroyer can launch torpedo but can only launch 1 per ship.
+        Torpedo can attack a whole row in battlefield but it can only attack one ship as the nearest one.
+        Torpedo will pass through the sunk ship.
+        No matter which way destroyer attack, it will be found by the enemy.
+        
+
+
+    B. Cruiser
+        Size:   3
+        Max:    3
+        
+        Cruiser can only be placed at Field A and Field B (see Field Intro.png).
+        Cruiser has 3 blocks of size. The middle one as the Armored Area. If therre's any torpedo hit thee Armored Area of cruiserm then it will sink immediately.
+        Otherwise, it will just get hit but won't sink
+
+        Cruiser can hit the whole battlefield except Field C (see Field Intro.png).
+        
+
+
+    C. Battleship
+        Size:   4
+        Max:    2
+
+        Battleship can be placed at anywhere.
+        Battleship has 4 blocks of size. The middle two as the Armored Area. If there's any torpedo hit the Armored Area of battleship, then it will sink immediately.
+        Otherwise, it will just get hit but won't sink.
+
+        Battleship can hit the whole battlefield.
+        If there's any battleship placed at Field A (even just a little bit on it), then it will be found in the beginning, but also enemy destroyer will be found, too.
+        If battleship placed parallel to the Enemy Side, then it will get extra move when USER use battlehsip to attack.
+        After battleship attack, it need to cost two moves to reload shell.
+
+
+
+    D. Aircraft carrier  *Can only attack by planes*
+        Size:   4
+        Max:    1
+
+        Aircraft carrier can only be placed at Field C (see Field Intro.png).
+        Aircraft carrier has 4 blocks of size. The middle two as the Armored Area. If there's any torpedo hit the Armored Area of aircraft carrier, then it will sink immediately.
+        Otherwise, it will just get hit but won't sink.
+
+        Aircraft carrier can send out planes to detect, intercept, or bomb enemy's ships.
+        If aircraft carrier got hit twice, then it can't send out planes anymore.
+        Planes introdutions:
+            I.   Detector
+            II.  Bomber
+            III. Fighter
+        Detector can randomly detect one block of the sea, but it need 2 moves to fly and bring back detail.
+        Detector can be interceptable.
+        If enemy send out detector, then player can make a choice to send fighter to knock it down or not. Same situation if enemy send out bomber.
+        Bomber can hit the whole battlefield. But after that, it need to wait 2 moves for next attack.
+        Except sending out fighter, send a plane will cost 1 move. It means that after you send a plane, enemy's turn.
+        
+
+    E. Supplyship  *Can't attack*  *Experiment*
+        Size:   3
+        Max:    2
+        
+        Supplyship can't attack any target.
+        If there're any ships around supplyship, then it's attack range +1.
+
+
+    F. Submarine
+        Size:   3
+        Max:    2
+
+        Submarine can only be placed at Field A and Field B (see Field Intro.png).
+        Submarine can only attack enemy by torpedo while it's under the sea. Otherwise, it can't attack.
+        Submarine need to cost 1 move to sink under the sea, and it can only stay for 3 moves. After that, it will float up automatically.
+        While submarine is under the sea, it can't be detectable, but still can get hurt.
+        If submarine get hit, it will sink immediately.
+        
