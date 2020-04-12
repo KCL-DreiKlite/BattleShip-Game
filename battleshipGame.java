@@ -79,7 +79,12 @@ class gameFrame extends JFrame {
     //Setup components' location and size
     private void setupComponentsLocationAndSize() {
         //Setup field's size and location
+        playerFieldPane.setSize(fieldSideLength*gridSideLength, fieldSideLength*gridSideLength);
+        playerFieldPane.setLocation(0, 0);
 
+        enemyFieldPane.setSize(fieldSideLength*gridSideLength, fieldSideLength*gridSideLength);
+        enemyFieldPane.setLocation(0, 0);
+        
 
         //Setup JLabels' location and size.
         for (int x = 0; x < fieldSideLength; x++) {
@@ -96,11 +101,19 @@ class gameFrame extends JFrame {
                 enemyGrid.setSize(gridSideLength, gridSideLength);
             }
         }
+
+        
     }
 
     //Setup components' details.
     private void setupComponentsDetails() {
-        
+        //Setup each grid's background color and border.
+        for (Iterator<JLabel> iterator = playerFieldVisiablePart.iterator(); iterator.hasNext(); ) {
+            JLabel tmp = iterator.next();       //Store JLabel from iterator from player visiable part for config.
+
+            tmp.setBackground(Color.BLUE);
+            tmp.setBorder(new border);
+        }
         
     }
 
@@ -118,7 +131,7 @@ class gameFrame extends JFrame {
     gameFrame() {
         super();
 
-        setupFrame();
+
         
     }
 }
