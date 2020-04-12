@@ -3,13 +3,14 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 
-class gameFrame extends JFrame {
+class GameUI extends JFrame {
 
     /**
      * The field will split into two parts: visiable part, and excutting part.
@@ -18,10 +19,10 @@ class gameFrame extends JFrame {
      */
     //Player's visiable and excutting part arraylist definition.
     ArrayList<JLabel> playerFieldVisiablePart = new ArrayList<JLabel>();
-    ArrayList<seaGrid> playerFieldExcuttingPart = new ArrayList<seaGrid>();
+    ArrayList<SeaGrid> playerFieldExcuttingPart = new ArrayList<SeaGrid>();
     //Enemy's visiable and excutting part arraylist definition.
     ArrayList<JLabel> enemyFieldVisiablePart = new ArrayList<JLabel>();
-    ArrayList<seaGrid> enemyFieldExcuttingPart = new ArrayList<seaGrid>();
+    ArrayList<SeaGrid> enemyFieldExcuttingPart = new ArrayList<SeaGrid>();
 
     //These panel will fill with visiable part which instead of the sea grid.
     JPanel playerFieldPane = new JPanel(null);  //Set layout = null
@@ -59,8 +60,8 @@ class gameFrame extends JFrame {
                 enemyFieldVisiablePart.add(new JLabel());
 
                 //Excutting part
-                playerFieldExcuttingPart.add(new seaGrid(new Point(x, y)));
-                enemyFieldExcuttingPart.add((new seaGrid(new Point(x, y))));
+                playerFieldExcuttingPart.add(new SeaGrid(new Point(x, y)));
+                enemyFieldExcuttingPart.add((new SeaGrid(new Point(x, y))));
             }
         }
 
@@ -79,12 +80,11 @@ class gameFrame extends JFrame {
     //Setup components' location and size
     private void setupComponentsLocationAndSize() {
         //Setup field's size and location
-        playerFieldPane.setSize(fieldSideLength*gridSideLength, fieldSideLength*gridSideLength);
-        playerFieldPane.setLocation(0, 0);
-
         enemyFieldPane.setSize(fieldSideLength*gridSideLength, fieldSideLength*gridSideLength);
         enemyFieldPane.setLocation(0, 0);
-        
+
+        playerFieldPane.setSize(fieldSideLength*gridSideLength, fieldSideLength*gridSideLength);
+        playerFieldPane.setLocation(playerFieldPane.getX()+enemyFieldPane.getWidth()+50, 0);
 
         //Setup JLabels' location and size.
         for (int x = 0; x < fieldSideLength; x++) {
@@ -108,12 +108,22 @@ class gameFrame extends JFrame {
     //Setup components' details.
     private void setupComponentsDetails() {
         //Setup each grid's background color and border.
+        for (Iterator<JLabel> iterator = enemyFieldVisiablePart.iterator(); iterator.hasNext(); ) {
+            JLabel tmp = iterator.next();
+
+            tmp.setBackground(Color.LIGHT_GRAY);
+            tmp.setOpaque(true);
+            tmp.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+        }
         for (Iterator<JLabel> iterator = playerFieldVisiablePart.iterator(); iterator.hasNext(); ) {
             JLabel tmp = iterator.next();       //Store JLabel from iterator from player visiable part for config.
 
-            tmp.setBackground(Color.BLUE);
-            tmp.setBorder(new border);
+            tmp.setBackground(Color.CYAN);
+            tmp.setOpaque(true);
+            tmp.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));  //Set color.
         }
+
+        
         
     }
 
@@ -123,38 +133,41 @@ class gameFrame extends JFrame {
         setVisible(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        setPreferredSize(new Dimension(200, 200));
-        
+        setPreferredSize(new Dimension(1000, 500));
+        pack();
     }
 
     //Constructor
-    gameFrame() {
+    GameUI() {
         super();
 
-
+        addComponents();
+        setupComponentsLocationAndSize();
+        setupComponentsDetails();
+        setupFrame();
         
     }
 }
 
 //The basic size unit of every kind of ships. It'll be placed at field pane.
-class seaGrid {
+class SeaGrid {
 
     //Store location
     public final Point location;
 
-    seaGrid(Point p) {
+    SeaGrid(Point p) {
         location = p;   //Initialize location.
         
     }
 }
 
 //Basic information and functions of ships
-class ships {
+class Ships {
 
     //Store the size of ship
     public final int SIZE;
 
-    ships(int SIZE) {   //Constructor
+    Ships(int SIZE) {   //Constructor
         this.SIZE = SIZE;
 
     }
@@ -166,7 +179,7 @@ class ships {
  * Size             :   3
  * Max placements   :   2
  */
-class submarine {
+class Submarine {
     //Size
     public final int SIZE = 3;
     
@@ -177,7 +190,7 @@ class submarine {
  * Size             :   2
  * Max placements   :   2
  */
-class destroyer {
+class Destroyer {
     //Size
     public final int SIZE = 2;
 
@@ -188,7 +201,7 @@ class destroyer {
  * Size             :   3
  * Max placements   :   3
  */
-class curiser {
+class Curiser {
     //Size
     public final int SIZE = 3;
 
@@ -199,7 +212,7 @@ class curiser {
  * Size             :   4
  * Max placements   :   2
  */
-class battleship {
+class Battleship {
     //Size
     public final int SIZE = 4;
 
@@ -210,7 +223,7 @@ class battleship {
  * Size             :   4
  * Max placements   :   1
  */
-class aricraftCarrier {
+class AricraftCarrier {
     //Size
     public final int SIZE = 4;
 
@@ -222,7 +235,7 @@ public class battleshipGame {
         
             @Override
             public void run() {
-                new gameFrame();
+                new GameUI();
             }
         });
     }
