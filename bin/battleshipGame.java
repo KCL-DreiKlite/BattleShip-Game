@@ -1,16 +1,62 @@
 
 import java.awt.*;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
+import javax.swing.event.MouseInputAdapter;
+import javax.swing.event.MouseInputListener;
 
 
 class GameUI extends JFrame {
+    /**
+     * The GameUI (Main frame) contain these JPanels (you can find out these idea in 'Game UI.png'):
+     * Main Function Panel          : Have some main function button, like 'Start game', 'Play with other people', etc.
+     * Gaming Area Panel            : The main gaming panel. Include player's and enemy's panel.
+     * Ships placement panel        : Let user drag ships into gaming area before start a new game. Include 'Reset button' and 'Ships icon'.
+     * Ships icon explaintion panel : Explain what color/icon indicate which ship.
+     * Battle Text Panel            : Record the battle log. Every battle information will show at here.
+     * 
+     * After a game begin, 'Ships icon explaintion panel' will replace 'Ships placement panel' to tell user some basic information.
+     * When a game end, it will replace back as origin.
+     * 
+     * The building order:
+     * MFP -> BTP -> GAP -> SPP -> SIEP
+     * 
+     */
+
+    //Main function panel. Every important functional button will be placed here.
+    JPanel mainFunctionPanel = new JPanel(null);
+    //Output status and battle log. Almost every game information will updated in here.
+    JPanel battleTextPanel = new JPanel(null);
+    //The gaming area. Both player's and enemy's field pane will be placed into this panel.
+    JPanel gamingAreaPanel = new JPanel(null);
+    //Store ships object and icon to let user insert ships into gaming area.
+    JPanel shipsPlacementPanel = new JPanel(null);
+    //When game start, it will tell which color/icon indicate what status or ship.
+    JPanel shipsIconExplaintionJPanel = new JPanel(null);
+ 
+
+    //Start a game. When a game started, it'll capture 'Stop', otherwise, it will capture 'Start'.
+    JButton btnStartGame;
+    //Connect and play with other player by pick-to-pick.
+    JButton btnPlayWithOthers;
+
+
+    //Output information and status at here.
+    JTextArea battleLogTextArea;
+    //Put a scroll pane into battleLogTextArea.
+    JScrollPane battleLogScrollPane;
+
+
     /**
      * The field will split into two parts: visiable part, and excutting part.
      * The actual function will run in excutting part, and update visiable part to sync two parts.
@@ -23,9 +69,6 @@ class GameUI extends JFrame {
     ArrayList<JLabel> enemyFieldVisiablePart = new ArrayList<JLabel>();
     ArrayList<SeaGrid> enemyFieldExcuttingPart = new ArrayList<SeaGrid>();
 
-    //The gaming area. Both player's and enemy's field pane will be placed into this panel.
-    JPanel gamingAreaPanel = new JPanel(null);
-
     //These labels are created to show which field is whos.
     JLabel lblPlayerFieldInfo = new JLabel("Player side");
     JLabel lblEnemyFieldInfo = new JLabel("Enemy side");
@@ -33,6 +76,8 @@ class GameUI extends JFrame {
     //These panel will fill with visiable part which instead of the sea grid.
     JPanel playerFieldPane = new JPanel(null);  //Set layout = null
     JPanel enemyFieldPane = new JPanel(null);
+
+
 
 
     //Store the side length of the field.
@@ -60,22 +105,32 @@ class GameUI extends JFrame {
         return new Point(index % fieldSideLength, index / fieldSideLength);
     }
 
+    //Create main main function panel, include almost every game-effect funtional button.
+    private void createMainFunctionPanel(Container container) {
+
+    }
+
+    //Create battle text panel. Include battle text log, which will output gaming information and status.
+    private void createBattleTextPanel(Container container) {
+
+    }
+
     //Create gaming area panel, include with both player's and enemy's field pane.
     private void createGamingAreaPanel(Container container) {
         //Render both player's and enemy's field
         for (int y = 0; y < fieldSideLength; y++) {
             for (int x = 0; x < fieldSideLength; x++) {
-                //Visiable part
+                //Visiable part.
                 playerFieldVisiablePart.add(new JLabel());
                 enemyFieldVisiablePart.add(new JLabel());
 
-                //Excutting part
+                //Excutting part.
                 playerFieldExcuttingPart.add(new SeaGrid(new Point(x, y)));
                 enemyFieldExcuttingPart.add((new SeaGrid(new Point(x, y))));
             }
         }
 
-        //Add these grid into field pane
+        //Add these grid into field pane.
         for (Iterator<JLabel> iterator = playerFieldVisiablePart.iterator(); iterator.hasNext(); )
             playerFieldPane.add(iterator.next());
         for (Iterator<JLabel> iterator = enemyFieldVisiablePart.iterator(); iterator.hasNext(); )
@@ -93,6 +148,13 @@ class GameUI extends JFrame {
         container.add(gamingAreaPanel);
     }
 
+    //Create ships placement panel, include reset button and ships icon.
+    private void createShipsPlacementPanel(Container container) {
+
+    }
+
+
+
     //Add components.
     private void addComponents() {
         Container cp = getContentPane();
@@ -107,11 +169,14 @@ class GameUI extends JFrame {
         //The width between two field pane.
         final int widthBetweenTwoPane = 25;
 
+        //The actual size of gaming area panel will be the components prefered size add space in four direction.
+        final int spareLeft = 10, spareRight = 10, spareTop = 20, spareBotton = 10;
+
         //Setup field's size and location
         enemyFieldPane.setSize(fieldSideLength*gridSideLength, fieldSideLength*gridSideLength);
-        enemyFieldPane.setLocation(0, 0);
+        enemyFieldPane.setLocation(spareLeft, spareTop);
         playerFieldPane.setSize(fieldSideLength*gridSideLength, fieldSideLength*gridSideLength);
-        playerFieldPane.setLocation(playerFieldPane.getX()+enemyFieldPane.getWidth()+widthBetweenTwoPane, 0);
+        playerFieldPane.setLocation(playerFieldPane.getX()+enemyFieldPane.getWidth()+widthBetweenTwoPane, spareTop);
 
         //Setup SeaGrid visiable part's location and size.
         for (int x = 0; x < fieldSideLength; x++) {
@@ -146,8 +211,8 @@ class GameUI extends JFrame {
         lblEnemyFieldInfo.setLocation(enemyFieldPaneLocation);
 
         //Last, setup gaming areea panel's location and size.
-        gamingAreaPanel.setLocation(0, 0);
-        gamingAreaPanel.setSize(playerFieldPane.getX()+playerFieldPane.getWidth(), lblPlayerFieldInfo.getY()+lblPlayerFieldInfo.getHeight());
+        gamingAreaPanel.setLocation(10, 10);
+        gamingAreaPanel.setSize(playerFieldPane.getX()+playerFieldPane.getWidth()+spareRight, lblPlayerFieldInfo.getY()+lblPlayerFieldInfo.getHeight()+spareBotton);
 
 
     }
@@ -162,6 +227,10 @@ class GameUI extends JFrame {
 
     //setup components' details from gaming area panel.
     private void setupGamingAreaPanelDetails() {
+
+        //Start right here.
+        //gamingAreaPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.RED), "HI"));
+
         //Setup each grid's background color and border.
         for (Iterator<JLabel> iterator = enemyFieldVisiablePart.iterator(); iterator.hasNext(); ) {
             JLabel tmp = iterator.next();
@@ -224,7 +293,19 @@ class GameUI extends JFrame {
         addComponents();
         setupComponentsLocationAndSize();
         setupComponentsDetails();
+
         setupFrame();
+
+    }
+}
+
+class hehe {
+    GameUI haha;
+    hehe(GameUI haha) {
+        this.haha = haha;
+
+    }
+    void bruh() {
         
     }
 }
@@ -315,7 +396,7 @@ public class battleshipGame {
         
             @Override
             public void run() {
-                new GameUI();
+                new GameUI();   //Create main frame.
             }
         });
     }
