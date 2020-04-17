@@ -1,5 +1,7 @@
 
 import java.awt.*;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -34,21 +36,25 @@ class GameUI extends JFrame {
      */
 
     //Main function panel. Every important functional button will be placed here.
-    JPanel mainFunctionPanel = new JPanel(null);
+    JPanel mainFunctionPanel;
     //Output status and battle log. Almost every game information will updated in here.
-    JPanel battleTextPanel = new JPanel(null);
+    JPanel battleTextPanel;
     //The gaming area. Both player's and enemy's field pane will be placed into this panel.
-    JPanel gamingAreaPanel = new JPanel(null);
+    JPanel gamingAreaPanel;
     //Store ships object and icon to let user insert ships into gaming area.
-    JPanel shipsPlacementPanel = new JPanel(null);
+    JPanel shipsPlacementPanel;
     //When game start, it will tell which color/icon indicate what status or ship.
-    JPanel shipsIconExplaintionJPanel = new JPanel(null);
+    JPanel shipsIconExplaintionJPanel;
  
 
-    //Start a game. When a game started, it'll capture 'Stop', otherwise, it will capture 'Start'.
+    //Start a game. "When a game started, it'll capture 'Stop', otherwise, it will capture 'Start'." -> Deprecated
     JButton btnStartGame;
     //Connect and play with other player by pick-to-pick.
     JButton btnPlayWithOthers;
+    //Display setting frame to let user modify some little param.
+    JButton btnSetting;
+    //Exit game.
+    JButton btnExitGame;
 
 
     //Output information and status at here.
@@ -105,8 +111,48 @@ class GameUI extends JFrame {
         return new Point(index % fieldSideLength, index / fieldSideLength);
     }
 
+
+    //Return a GridBagConstraints. Any component implement GridBagLayout need this.
+    private GridBagConstraints getGBC(int gridx, int gridy, int gridwidth, int gridheight, int fill, Insets insets) {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = gridx; gbc.gridy = gridy;
+        gbc.gridwidth = gridwidth; gbc.gridheight = gridheight;
+        gbc.insets = insets;
+        gbc.fill = fill;
+        
+        gbc.weighty = 0.1;
+        return gbc;
+    }
+    private GridBagConstraints getGBC(int gridx, int gridy, int gridwidth, int gridheight, int fill, Insets insets, double weightx, double weighty) {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = gridx; gbc.gridy = gridy;
+        gbc.gridwidth = gridwidth; gbc.gridheight = gridheight;
+        gbc.insets = insets;
+        gbc.fill = fill;
+        
+        gbc.weighty = 0.1;
+        return gbc;
+    }
+
     //Create main main function panel, include almost every game-effect funtional button.
     private void createMainFunctionPanel(Container container) {
+        //Create panel and set layout as GridBagLayout.
+        //mainFunctionPanel = new JPanel(new GridBagLayout());  NOPE. We'll set this up at createGameUI()
+        
+        //Define new buttons.
+        btnStartGame = new JButton("Start");
+        btnSetting = new JButton("Setting");
+        btnPlayWithOthers = new JButton("Play with others");
+        btnExitGame = new JButton("Exit");
+
+        //Put these buttons into main function panel.
+        mainFunctionPanel.add(btnStartGame, getGBC(0, 0, 1, 1, 1, new Insets(1, 1, 1, 1)));
+        mainFunctionPanel.add(btnSetting, getGBC(1, 0, 1, 1, 1, new Insets(1, 1, 1, 1)));
+        mainFunctionPanel.add(btnPlayWithOthers, getGBC(2, 0, 1, 1, 1, new Insets(1, 1, 1, 1)));
+        mainFunctionPanel.add(btnExitGame, getGBC(3, 0, 1, 1, 1, new Insets(1, 1, 1, 1)));
+
+        //Add Main function panel into contentpane.
+        //container.add(mainFunctionPanel); NOPE. We'll use GridBagLayout at 
 
     }
 
@@ -117,6 +163,9 @@ class GameUI extends JFrame {
 
     //Create gaming area panel, include with both player's and enemy's field pane.
     private void createGamingAreaPanel(Container container) {
+        //Create panel and set layout as null.
+        //gamingAreaPanel = new JPanel(null);   NOPE. We'll set this up at createGameUI()
+
         //Render both player's and enemy's field
         for (int y = 0; y < fieldSideLength; y++) {
             for (int x = 0; x < fieldSideLength; x++) {
@@ -145,23 +194,46 @@ class GameUI extends JFrame {
         gamingAreaPanel.add(lblEnemyFieldInfo);
 
         //Last, add gaming area into cp.
-        container.add(gamingAreaPanel);
+        //container.add(gamingAreaPanel);   NOPE. We'll set this up at createGameUI()
     }
 
     //Create ships placement panel, include reset button and ships icon.
     private void createShipsPlacementPanel(Container container) {
-
+        
     }
 
 
 
     //Add components.
-    private void addComponents() {
+    private void createGameUIComponents() {
         Container cp = getContentPane();
-        cp.setLayout(null);     //We'll place components by giving pixel-location directly.
+        cp.setLayout(new GridBagLayout());  //Set layout.
 
-        //Gaming Area.
+        //Create a new layout configuration class.
+        GBC gbc = new GBC();
+
+        //Create panels.
+        mainFunctionPanel = new JPanel(new GridBagLayout());
+        gamingAreaPanel = new JPanel(null);
+
+        //Call these function to define and create components in each panel.
+        createMainFunctionPanel(cp);
+        System.out.println("Main Function Panel components created successful.");
         createGamingAreaPanel(cp);
+        System.out.println("Gaming Area Panel components created successful.");
+
+        //Put these panels into contentpane.
+        cp.add(mainFunctionPanel, gbc.getGBC(0, 0, 3, 1, 1, new Insets(1, 1, 1, 1), 1.0, 0.01));
+        System.out.println("Main Function Panel has been added into content pane.");
+        cp.add(gamingAreaPanel, gbc.getGBC(1, 1, 1, 1, 1, new Insets(1, 1, 1, 1), 0.6, 0.8));
+        
+        System.out.println("Gaming Area Panel has been added into content pane.");
+
+    }
+
+    //Setup components' location and size from Main function panel.
+    private void setupMainFunctionPanelLocationAndSize() {
+
     }
 
     //Setup components' location and size from Gaming Area Panel. Also gamingArea itself.
@@ -211,10 +283,10 @@ class GameUI extends JFrame {
         lblEnemyFieldInfo.setLocation(enemyFieldPaneLocation);
 
         //Last, setup gaming areea panel's location and size.
-        gamingAreaPanel.setLocation(10, 10);
+        //gamingAreaPanel.setLocation(10, 10);
         gamingAreaPanel.setSize(playerFieldPane.getX()+playerFieldPane.getWidth()+spareRight, lblPlayerFieldInfo.getY()+lblPlayerFieldInfo.getHeight()+spareBotton);
 
-
+        
     }
 
     
@@ -227,9 +299,7 @@ class GameUI extends JFrame {
 
     //setup components' details from gaming area panel.
     private void setupGamingAreaPanelDetails() {
-
-        //Start right here.
-        //gamingAreaPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.RED), "HI"));
+        gamingAreaPanel.setBorder(BorderFactory.createTitledBorder("hi"));
 
         //Setup each grid's background color and border.
         for (Iterator<JLabel> iterator = enemyFieldVisiablePart.iterator(); iterator.hasNext(); ) {
@@ -275,7 +345,7 @@ class GameUI extends JFrame {
 
 
     //Setup Game UI main setting.
-    private void setupFrame() {
+    private void setupGameUI() {
         setVisible(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         //getContentPane().setFont(new Font("Arial", Font.PLAIN, 20));
@@ -290,11 +360,11 @@ class GameUI extends JFrame {
         
         
 
-        addComponents();
+        createGameUIComponents();
         setupComponentsLocationAndSize();
         setupComponentsDetails();
 
-        setupFrame();
+        setupGameUI();
 
     }
 }
