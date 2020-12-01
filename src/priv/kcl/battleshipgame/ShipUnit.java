@@ -52,9 +52,7 @@ public class ShipUnit {
      * @see ShipUnit.location
      */
     protected int direction;
-
-    protected boolean availablePart[];
-
+    
     /**
      * The location of this ship unit in battlefield.<p>
      * If the direction is HORIZONTAL, then the head of this ship unit is the TOP. <p>
@@ -62,8 +60,56 @@ public class ShipUnit {
      */
     protected Coordinate location;
 
-    void shipGotHit(Coordinate hitLocation) {
+    /**
+     * 
+     */
+    protected boolean availablePart[];
 
+    protected int numberOfTorpedos;
+
+
+    /**
+     * Let the ship know it's got hit.
+     * 
+     * @param hitPart the part where ship got hit. The value corresponded to the part
+     * by counting from the left or the top by the ship's direction. Start from 0
+     * @param from who did that?!
+     * @return <code>true</code> if and only if the specific part still available and
+     * is exist. Otherwise return <code>false</code>
+     */
+    protected boolean shipGotHit(int hitPart, ShipUnit from) {
+        if (hitPart < 0 || hitPart >= size)
+            return false;
+        else if (!availablePart[hitPart])
+            return false;
+        
+        availablePart[hitPart] = false;
+        
+        return true;
+    }
+    /**
+     * Let the ship know it's got hit.
+     * 
+     * @param hitCoordinate the coordinate where ship got hit
+     * @param from who did that?!
+     * @return <code>true</code> if and only if the ship's part from given coordinate
+     * is exist and still available. Otherwise return <code>false</code>
+     */
+    protected boolean shipGotHit(Coordinate hitCoordinate, ShipUnit from) {
+        if (direction == HORIZONTAL_DIRECTION) {
+            if (hitCoordinate.getY() != location.getY())
+                return false;
+            else if (hitCoordinate.getX() < location.getX() || location.getX()+size < hitCoordinate.getX())
+                return false;
+            return shipGotHit(hitCoordinate.getX()-location.getX(), from);
+        }
+        else {
+            if (hitCoordinate.getX() != location.getX())
+                return false;
+            else if (hitCoordinate.getY() < location.getY() || location.getY()+size < hitCoordinate.getY())
+                return false;
+            return shipGotHit(hitCoordinate.getY()-location.getY(), from);
+        }
     }
 
     // Initialize.
@@ -99,7 +145,13 @@ public class ShipUnit {
 
     public String getName() {return name; }
     public String getType() {return type; }
+    /**
+     * Get the full name of the ship.
+     * @return a string contains TYPE and NAME
+     */
+    public String getFullName() {return type + "-" + name; }
     public int getSize() {return size; }
     public int getDirection() {return direction; }
+    public boolean isAlive() {return alive; }
 }
 
