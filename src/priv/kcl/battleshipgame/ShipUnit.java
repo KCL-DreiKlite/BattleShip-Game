@@ -175,6 +175,25 @@ public class ShipUnit {
         availablePart = new boolean[size];
         for (int eachPart = 0; eachPart < size; eachPart++)
             availablePart[eachPart] = true;
+            
+    }
+    /**
+     * Create a new ship unit.
+     * 
+     * @param name the name of this ship unit.
+     * @param type the type name of this ship unit. (Ex. Cruiser, Destroyer, Carrier, etc.)
+     * @param size the size of this ship unit.
+     */
+    ShipUnit(String name, String type, int size) {
+        this.name = name;
+        this.type = type;
+        this.size = size;
+        this.direction = 0;
+        
+        availablePart = new boolean[size];
+        for (int eachPart = 0; eachPart < size; eachPart++)
+            availablePart[eachPart] = true;
+        
     }
 
     public void setDirection(int direction) {
