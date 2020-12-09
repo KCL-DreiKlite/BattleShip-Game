@@ -87,12 +87,18 @@ public class ShipUnit {
      * is exist. Otherwise return <code>false</code>
      */
     protected boolean shipGotHit(int hitPart, ShipUnit from, int weaponType) {
+        if (!alive)
+            return false;
+
         if (hitPart < 0 || hitPart >= size)
             return false;
         else if (!availablePart[hitPart] || !alive)
             return false;
         
         availablePart[hitPart] = false;
+
+        if (size >= 3 && hitPart != 0 && hitPart != size-1 && weaponType == ATTACKED_BY_TORPEDOS)
+            shipSunk();
         
         return true;
     }
@@ -108,6 +114,9 @@ public class ShipUnit {
      * is exist and still available. Otherwise return <code>false</code>
      */
     protected boolean shipGotHit(Coordinate hitCoordinate, ShipUnit from, int weaponType) {
+        if (!alive)
+            return false;
+
         if (direction == HORIZONTAL_DIRECTION) {
             if (hitCoordinate.getY() != location.getY())
                 return false;
@@ -132,7 +141,7 @@ public class ShipUnit {
     // }
 
     /**
-     * Call this method when ship is sunk.
+     * Call this method when ship was sunk.
      */
     protected void shipSunk() {
         alive = false;
