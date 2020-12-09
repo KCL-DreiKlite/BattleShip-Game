@@ -14,6 +14,11 @@ public class ShipUnit {
      * The vertical direction value.
      */
     public static final int VERTICAL_DIRECTION = 2;
+
+
+    public static final int ATTACKED_BY_SHELLS = 0;
+    public static final int ATTACKED_BY_TORPEDOS = 1;
+    public static final int ATTACKED_BY_AIRCRAFTS = 2;
     
     protected boolean alive = true;
 
@@ -65,8 +70,9 @@ public class ShipUnit {
      */
     protected boolean availablePart[];
 
-    protected int numberOfTorpedos;
+    protected int torpedos;
 
+    protected int shells;
 
     /**
      * Let the ship know it's got hit.
@@ -74,13 +80,16 @@ public class ShipUnit {
      * @param hitPart the part where ship got hit. The value corresponded to the part
      * by counting from the left or the top by the ship's direction. Start from 0
      * @param from who did that?!
+     * @param weaponType hit by what kind of weapon. It could be
+     * <code>ATTACKED_BY_SHELLS</code>, <code>ATTACKED_BY_TORPEDOS</code>, or
+     * <code>ATTACKED_BY_AIRCRAFTS</code>
      * @return <code>true</code> if and only if the specific part still available and
      * is exist. Otherwise return <code>false</code>
      */
-    protected boolean shipGotHit(int hitPart, ShipUnit from) {
+    protected boolean shipGotHit(int hitPart, ShipUnit from, int weaponType) {
         if (hitPart < 0 || hitPart >= size)
             return false;
-        else if (!availablePart[hitPart])
+        else if (!availablePart[hitPart] || !alive)
             return false;
         
         availablePart[hitPart] = false;
@@ -92,24 +101,44 @@ public class ShipUnit {
      * 
      * @param hitCoordinate the coordinate where ship got hit
      * @param from who did that?!
+     * @param weaponType hit by what kind of weapon. It could be
+     * <code>ATTACKED_BY_SHELLS</code>, <code>ATTACKED_BY_TORPEDOS</code>, or
+     * <code>ATTACKED_BY_AIRCRAFTS</code>
      * @return <code>true</code> if and only if the ship's part from given coordinate
      * is exist and still available. Otherwise return <code>false</code>
      */
-    protected boolean shipGotHit(Coordinate hitCoordinate, ShipUnit from) {
+    protected boolean shipGotHit(Coordinate hitCoordinate, ShipUnit from, int weaponType) {
         if (direction == HORIZONTAL_DIRECTION) {
             if (hitCoordinate.getY() != location.getY())
                 return false;
             else if (hitCoordinate.getX() < location.getX() || location.getX()+size < hitCoordinate.getX())
                 return false;
-            return shipGotHit(hitCoordinate.getX()-location.getX(), from);
+            return shipGotHit(hitCoordinate.getX()-location.getX(), from, weaponType);
         }
         else {
             if (hitCoordinate.getX() != location.getX())
                 return false;
             else if (hitCoordinate.getY() < location.getY() || location.getY()+size < hitCoordinate.getY())
                 return false;
-            return shipGotHit(hitCoordinate.getY()-location.getY(), from);
+            return shipGotHit(hitCoordinate.getY()-location.getY(), from, weaponType);
         }
+    }
+
+    // protected boolean firing(ShipUnit target, int part) {
+
+    // }
+    // protected boolean firing(ShipUnit target, Coordinate coordinate) {
+        
+    // }
+
+    /**
+     * Call this method when ship is sunk.
+     */
+    protected void shipSunk() {
+        alive = false;
+
+        for (int part = 0; part < availablePart.length; part++)
+            availablePart[part] = false;
     }
 
     // Initialize.
