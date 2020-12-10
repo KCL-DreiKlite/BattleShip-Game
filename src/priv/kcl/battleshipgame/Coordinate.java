@@ -26,7 +26,7 @@ public class Coordinate {
     public void setX(int x) {X = x; }
     public void setY(int y) {Y = y; }
     
-    public Coordinate getCoordinate() {
+    public Coordinate clone() {
         return new Coordinate(X, Y);
     }
     public int getX() {return X; }

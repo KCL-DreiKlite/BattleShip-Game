@@ -7,6 +7,10 @@ package priv.kcl.battleshipgame;
 public class ShipUnit {
 
     /**
+     * The direction hasn't be defined yet.
+     */
+    public static final int UNDEFINED_DIRECTION = 0;
+    /**
      * The horizontal direction value.
      */
     public static final int HORIZONTAL_DIRECTION = 1;
@@ -60,8 +64,8 @@ public class ShipUnit {
     
     /**
      * The location of this ship unit in battlefield.<p>
-     * If the direction is HORIZONTAL, then the head of this ship unit is the TOP. <p>
-     * If the direction is VERTICAL, then the head is LEFT.
+     * If the direction is HORIZONTAL, then the head of this ship unit is the LEFT. <p>
+     * If the direction is VERTICAL, then the head is TOP.
      */
     protected Coordinate location;
 
@@ -150,7 +154,50 @@ public class ShipUnit {
             availablePart[part] = false;
     }
 
+    /**
+     * Transform specific part as the coordinate form in battlefield.
+     * @param targetPart the part need to be transform
+     * @return the <strong>Coordinate</strong> by given ship part. Retrun <code>null</code>
+     * if the target part doesn't exist or the direction is <code>UNDEFINED_DIRECTION</code>.
+     */
+    protected Coordinate transformToCoordinate(int targetPart) {
+        if (direction == 0 || targetPart < 0 || size <= targetPart)
+            return null;
+        else if (direction == HORIZONTAL_DIRECTION)
+            return new Coordinate(location.getX()+targetPart, location.getY());
+        else
+            return new Coordinate(location.getX(), location.getY()+targetPart);
+    }
+
+    /**
+     * Transform coordinate in battlefield to part index.
+     * @param targetCoordinate the coordinate need to be transform
+     * @return the specific part index by given coordinate. Return <strong>-1</strong> if the
+     * given coordinate is not included by the ship or the direction is 0.
+     */
+    protected int transformToPart(Coordinate targetCoordinate) {
+        if (direction == 0)
+            return -1;
+        else if (direction == HORIZONTAL_DIRECTION) {
+            if (targetCoordinate.getY() != location.getY())
+                return -1;
+            else if (targetCoordinate.getX() < location.getX() || location.getX()+size < targetCoordinate.getX())
+                return -1;
+            return targetCoordinate.getX() - location.getX();
+        }
+        else {
+            if (targetCoordinate.getX() != location.getX())
+                return -1;
+            else if (targetCoordinate.getY() < location.getY() || location.getY()+size < targetCoordinate.getY())
+                return -1;
+            return targetCoordinate.getY() - location.getY();
+        }
+    }
+
     // Initialize.
+    /**
+     * @deprecated
+     */
     ShipUnit() {
         size = 0;
         direction = 0;
@@ -177,6 +224,7 @@ public class ShipUnit {
             availablePart[eachPart] = true;
             
     }
+    
     /**
      * Create a new ship unit.
      * 
@@ -210,5 +258,11 @@ public class ShipUnit {
     public int getSize() {return size; }
     public int getDirection() {return direction; }
     public boolean isAlive() {return alive; }
+
+    public boolean isAvailable(int part) {
+        if (part < 0 || size <= part)
+            return false;
+        return availablePart[part];
+    }
 }
 
