@@ -35,7 +35,7 @@ public class ShipUnit {
      * <blockquote>
      * 0000
      * </blockquote>
-     * then <code>shipDimension</code>'s value is
+     * then {@code shipDimension}'s value is
      * <pre>
      * shipDimension[0][0] = true
      * shipDimension[1][0] = true
@@ -73,10 +73,11 @@ public class ShipUnit {
      * 
      */
     protected boolean availablePart[];
+    
+    protected int shells;
 
     protected int torpedos;
 
-    protected int shells;
 
     /**
      * Let the ship know it's got hit.
@@ -85,10 +86,10 @@ public class ShipUnit {
      * by counting from the left or the top by the ship's direction. Start from 0
      * @param from who did that?!
      * @param weaponType hit by what kind of weapon. It could be
-     * <code>ATTACKED_BY_SHELLS</code>, <code>ATTACKED_BY_TORPEDOS</code>, or
-     * <code>ATTACKED_BY_AIRCRAFTS</code>
-     * @return <code>true</code> if and only if the specific part still available and
-     * is exist. Otherwise return <code>false</code>
+     * {@code ATTACKED_BY_SHELLS}, {@code ATTACKED_BY_TORPEDOS}, or
+     * {@code ATTACKED_BY_AIRCRAFTS}
+     * @return {@code true} if and only if the specific part still available and is
+     * exist. Otherwise return {@code false}
      */
     protected boolean shipGotHit(int hitPart, ShipUnit from, int weaponType) {
         if (!alive)
@@ -112,10 +113,10 @@ public class ShipUnit {
      * @param hitCoordinate the coordinate where ship got hit
      * @param from who did that?!
      * @param weaponType hit by what kind of weapon. It could be
-     * <code>ATTACKED_BY_SHELLS</code>, <code>ATTACKED_BY_TORPEDOS</code>, or
-     * <code>ATTACKED_BY_AIRCRAFTS</code>
-     * @return <code>true</code> if and only if the ship's part from given coordinate
-     * is exist and still available. Otherwise return <code>false</code>
+     * {@code ATTACKED_BY_SHELLS}, {@code ATTACKED_BY_TORPEDOS}, or
+     * {@code ATTACKED_BY_AIRCRAFTS}
+     * @return {@code true} if and only if the specific part still available and is
+     * exist. Otherwise return {@code false}
      */
     protected boolean shipGotHit(Coordinate hitCoordinate, ShipUnit from, int weaponType) {
         if (!alive)
@@ -157,8 +158,8 @@ public class ShipUnit {
     /**
      * Transform specific part as the coordinate form in battlefield.
      * @param targetPart the part need to be transform
-     * @return the <strong>Coordinate</strong> by given ship part. Retrun <code>null</code>
-     * if the target part doesn't exist or the direction is <code>UNDEFINED_DIRECTION</code>.
+     * @return the <strong>Coordinate</strong> by given ship part. Retrun {@code null}
+     * if the target part doesn't exist or the direction is {@code UNDEFINED_DIRECTION}.
      */
     protected Coordinate transformToCoordinate(int targetPart) {
         if (direction == 0 || targetPart < 0 || size <= targetPart)
@@ -205,6 +206,28 @@ public class ShipUnit {
         type = "";
     }
 
+    
+    public void setDirection(int direction) {
+        this.direction = direction;
+    }
+    
+    public String getName() {return name; }
+    public String getType() {return type; }
+    /**
+     * Get the full name of the ship.
+     * @return a string contains TYPE and NAME
+     */
+    public String getFullName() {return type + "-" + name; }
+    public int getSize() {return size; }
+    public int getDirection() {return direction; }
+    public boolean isAlive() {return alive; }
+    
+    public boolean isAvailable(int part) {
+        if (part < 0 || size <= part)
+            return false;
+        return availablePart[part];
+    }
+
     /**
      * Create a new ship unit.
      * 
@@ -218,7 +241,7 @@ public class ShipUnit {
         this.type = type;
         this.size = size;
         this.direction = direction;
-
+    
         availablePart = new boolean[size];
         for (int eachPart = 0; eachPart < size; eachPart++)
             availablePart[eachPart] = true;
@@ -242,27 +265,6 @@ public class ShipUnit {
         for (int eachPart = 0; eachPart < size; eachPart++)
             availablePart[eachPart] = true;
         
-    }
-
-    public void setDirection(int direction) {
-        this.direction = direction;
-    }
-
-    public String getName() {return name; }
-    public String getType() {return type; }
-    /**
-     * Get the full name of the ship.
-     * @return a string contains TYPE and NAME
-     */
-    public String getFullName() {return type + "-" + name; }
-    public int getSize() {return size; }
-    public int getDirection() {return direction; }
-    public boolean isAlive() {return alive; }
-
-    public boolean isAvailable(int part) {
-        if (part < 0 || size <= part)
-            return false;
-        return availablePart[part];
     }
 }
 
